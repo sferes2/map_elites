@@ -41,10 +41,10 @@ def configure(blah): pass
 
 def build(bld):
     print ("Entering directory `" + os.getcwd() + "/modules/'")
-    test_map_elite = bld.new_task_gen('cxx', 'program')
-    test_map_elite.source = 'test_map_elite.cpp'
-    test_map_elite.includes = '. ../../'
-    test_map_elite.uselib_local = 'sferes2'
-    test_map_elite.uselib = 'EIGEN3 BOOST BOOST_UNIT_TEST_FRAMEWORK'
-    test_map_elite.target = 'test_map_elite'
-    test_map_elite.unit_test = 1
+    test_map_elites = bld.new_task_gen('cxx', 'program')
+    test_map_elites.source = 'test_map_elites.cpp'
+    test_map_elites.includes = '. ../../'
+    test_map_elites.uselib_local = 'sferes2'
+    test_map_elites.uselib = 'EIGEN3 BOOST BOOST_UNIT_TEST_FRAMEWORK'
+    test_map_elites.target = 'test_map_elites'
+    test_map_elites.unit_test = 1
