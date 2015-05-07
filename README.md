@@ -2,6 +2,10 @@
 
 MAP-Elites module for Sferes2.
 
+## Authors:
+- Jean-Baptiste Mouret jean-baptiste.mouret@inria.fr
+- Danesh Tarapore
+
 ## Reference:
 
 Mouret, J. B., & Clune, J. (2015). Illuminating search spaces by mapping elites. arXiv preprint arXiv:1504.04909.
