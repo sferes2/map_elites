@@ -59,18 +59,7 @@ namespace sferes {
       typedef typename std::vector<indiv_t> pop_t;
       typedef typename pop_t::iterator it_t;
       typedef typename std::vector<std::vector<indiv_t> > front_t;
-
-      //typedef boost::array<float, 2> point_t;
-
-
       typedef boost::shared_ptr<Phen> phen_t;
-      //typedef boost::multi_array<phen_t, 2> array_t;
-
-
-      /*static const size_t res_x = Params::ea::res_x;
-        static const size_t res_y = Params::ea::res_y;*/
-
-      //static const size_t behav_dim = Params::ea::behav_shape_size();
       static const size_t behav_dim = Params::ea::behav_dim;
 
       typedef boost::array<float, behav_dim> point_t;
@@ -80,28 +69,12 @@ namespace sferes {
 
 
       MapElites() {
-        // - my_type my_name(size_t i)
-        // - size_t my_name_size()
-
         assert(behav_dim == Params::ea::behav_shape_size());
-        //boost::array<long int, behav_dim> tmp_shape;
         for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i)
           behav_shape[i] = Params::ea::behav_shape(i);
-
-
-        //boost::array<typename array_t::index, behav_dim> shape = behav_shape;
         _array.resize(behav_shape);
         _array_parents.resize(behav_shape);
-
-        //boost::array<typename array_t::index, behav_dim> shape = {{ 2, 2 }}; //behav_shape
-        //allocate space for _array and _array_parents
       }
-
-      /*MapElites() :
-      _array(boost::extents[res_x][res_y]),
-      _array_parents(boost::extents[res_x][res_y])
-        {
-        }*/
 
       void random_pop() {
         parallel::init();
@@ -118,22 +91,9 @@ namespace sferes {
       void epoch() {
         this->_pop.clear();
 
-        //for_each(_array, a function call);
-
-
-        /*        ‘boost::multi_array<boost::shared_ptr<sferes::phen::Parameters<sferes::gen::EvoFloat<10, Params>, Rastrigin<Params>, Params> >, 2ul, std::allocator<boost::shared_ptr<sferes::phen::Parameters<sferes::gen::EvoFloat<10, Params>, Rastrigin<Params>, Params> > > >::element {aka boost::shared_ptr<sferes::phen::Parameters<sferes::gen::EvoFloat<10, Params>, Rastrigin<Params>, Params> >}’)
-        type ‘boost::none_t {aka int boost::detail::none_helper::*}’*/
-
-
-        //for(auto i = _array.data(); i < (_array.data() + _array.num_elements()); ++i)
         for(const phen_t* i = _array.data(); i < (_array.data() + _array.num_elements()); ++i)
           if(*i)
             this->_pop.push_back(*i);
-
-        /*for (size_t i = 0; i < res_x; ++i)
-            for (size_t j = 0; j < res_y; ++j)
-                if (_array[i][j])
-                    this->_pop.push_back(_array[i][j]);*/
 
         pop_t ptmp, p_parents;
         for (size_t i = 0; i < Params::pop::size; ++i) {
@@ -202,11 +162,6 @@ namespace sferes {
           assert(behav_pos[i] < behav_shape[i]);
         }
 
-        //boost::array<typename array_t::index, behav_dim> idx = behav_pos;
-
-        /*if (!_array(behav_pos)
-                || i1->fit().value() >
-                _array(behav_pos)->fit().value())*/
         float epsilon = 0.05;
         if (!_array(behav_pos)
             || (i1->fit().value() - _array(behav_pos)->fit().value()) > epsilon
@@ -216,24 +171,6 @@ namespace sferes {
           return true;
         }
         return false;
-
-
-        /*size_t x = round(p[0] * res_x);
-        size_t y = round(p[1] * res_y);
-        x = std::min(x, res_x - 1);
-        y = std::min(y, res_y - 1);
-        assert(x < res_x);
-        assert(y < res_y);
-
-        if (!_array[x][y]
-                || i1->fit().value() >
-                _array[x][y]->fit().value())
-        {
-            _array[x][y] = i1;
-            _array_parents[x][y] = parent;
-            return true;
-        }
-        return false;*/
       }
 
 
@@ -267,7 +204,6 @@ namespace sferes {
         int x1 = misc::rand< int > (0, pop.size());
         return pop[x1];
       }
-
 
     };
   }
