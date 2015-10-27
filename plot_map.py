@@ -29,8 +29,8 @@ def scale2(x, pos):
 size = int(sys.argv[2])
 
 print sys.argv[1]
-print np.loadtxt(sys.argv[1]).T
-x, y, z = np.loadtxt(sys.argv[1], unpack=True).T
+#data = np.loadtxt(sys.argv[1]).T
+k, x, y, z = np.loadtxt(sys.argv[1], unpack=True)
 
 data = np.zeros((size, size))
 m = 0
