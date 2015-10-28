@@ -76,18 +76,16 @@ using namespace sferes::gen::evo_float;
 
 struct Params {
     struct ea {
-        /*SFERES_CONST size_t res_x = 256;
-    SFERES_CONST size_t res_y = 256;*/
-
         SFERES_CONST size_t behav_dim = 2;
+      SFERES_CONST double epsilon = 0;//0.05;
         SFERES_ARRAY(size_t, behav_shape, 256, 256);
     };
     struct pop {
         // number of initial random points
         SFERES_CONST size_t init_size = 1000;
         // size of a batch
-        SFERES_CONST size_t size = 2000;
-        SFERES_CONST size_t nb_gen = 5001;
+        SFERES_CONST size_t size = 1000;
+        SFERES_CONST size_t nb_gen = 10001;
         SFERES_CONST size_t dump_period = 1000;
     };
     struct parameters {
@@ -114,8 +112,7 @@ FIT_MAP(Rastrigin){
       f += ind.data(i) * ind.data(i) - 10 * cos(2 * M_PI * ind.data(i));
     this->_value = -f;
     
-    std::vector<float> data = {ind.gen().data(0), ind.gen().data(1)};
-    //this->set_desc(ind.gen().data(0), ind.gen().data(1));
+    std::vector<float> data = { ind.gen().data(0), ind.gen().data(1) };
     this->set_desc(data);
   }
   

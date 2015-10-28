@@ -22,7 +22,6 @@ namespace sferes {
             behav_index_t behav_strides;
             behav_index_t behav_indexbase;
 
-            //Map() : _xs(0), _ys(0) {}
             Map() : behav_dim(Params::ea::behav_dim)
             {
                 for (size_t i = 0; i < Params::ea::behav_shape_size(); ++i)

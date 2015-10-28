@@ -117,7 +117,8 @@ namespace sferes {
                     _add_to_archive(ptmp[i], p_parents[i]);
             }
 
-            long int getindex(const array_t& m, const indiv_t* requestedElement, const unsigned short int direction) const
+            long int getindex(const array_t& m, const indiv_t* requestedElement,
+			      const unsigned short int direction) const
             {
                 int offset = requestedElement - m.origin();
                 return (offset / m.strides()[direction] % m.shape()[direction] + m.index_bases()[direction]);
@@ -167,12 +168,12 @@ namespace sferes {
                     assert(behav_pos[i] < behav_shape[i]);
                 }
 
-                float epsilon = 0.05;
                 if (!_array(behav_pos)
-                    || (i1->fit().value() - _array(behav_pos)->fit().value()) > epsilon
-                    || (fabs(i1->fit().value() - _array(behav_pos)->fit().value()) <= epsilon && _dist_center(i1) < _dist_center(_array(behav_pos)))) {
-                    _array(behav_pos) = i1;
-                    _array_parents(behav_pos) = parent;
+                    || (i1->fit().value() - _array(behav_pos)->fit().value()) > Params::ea::epsilon
+                    || (fabs(i1->fit().value() - _array(behav_pos)->fit().value()) <= Params::ea::epsilon
+		       && _dist_center(i1) < _dist_center(_array(behav_pos))) ) {
+		      _array(behav_pos) = i1;
+                      _array_parents(behav_pos) = parent;
                     return true;
                 }
                 return false;
