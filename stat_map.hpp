@@ -147,7 +147,6 @@ namespace sferes {
 
       }
 
-
       template<typename EA>
       void _write_progress(const EA& ea, std::ofstream& ofs) const {
 

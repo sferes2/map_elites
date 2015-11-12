@@ -58,40 +58,26 @@
 #include "fit_map.hpp"
 #include "stat_map.hpp"
 
-
-
-/*#define NO_MPI
-#ifdef GRAPHIC
-#define NO_PARALLEL
-#include "renderer/osg_visitor.hh"
-#endif
-
 #ifndef NO_PARALLEL
 #include <sferes/eval/parallel.hpp>
-#ifndef NO_MPI
-#include <sferes/eval/mpi.hpp>
-#endif
 #else
 #include <sferes/eval/eval.hpp>
-#endif*/
-
-
+#endif
 
 using namespace sferes::gen::evo_float;
-
 
 struct Params {
   struct ea {
     SFERES_CONST size_t behav_dim = 2;
+    SFERES_CONST double epsilon = 0;//0.05;
     SFERES_ARRAY(size_t, behav_shape, 256, 256);
-
   };
   struct pop {
     // number of initial random points
     SFERES_CONST size_t init_size = 1000;
     // size of a batch
-    SFERES_CONST size_t size = 2000;
-    SFERES_CONST size_t nb_gen = 5001;
+    SFERES_CONST size_t size = 1000;
+    SFERES_CONST size_t nb_gen = 10001;
     SFERES_CONST size_t dump_period = 1000;
   };
   struct parameters {
@@ -108,16 +94,16 @@ struct Params {
   };
 };
 
-
 // Rastrigin
-FIT_MAP(Rastrigin) {
-public:
-  template<typename Indiv>
-  void eval(Indiv& ind) {
+FIT_MAP(Rastrigin){
+  public :
+  template <typename Indiv>
+  void eval(Indiv & ind) {
     float f = 10 * ind.size();
     for (size_t i = 0; i < ind.size(); ++i)
-      f += ind.data(i) * ind.data(i) - 10 * cos(2 * M_PI * ind.data(i));
+    f += ind.data(i) * ind.data(i) - 10 * cos(2 * M_PI * ind.data(i));
     this->_value = -f;
+
     std::vector<float> data = { ind.gen().data(0), ind.gen().data(1) };
     this->set_desc(data);
   }
@@ -135,7 +121,7 @@ BOOST_AUTO_TEST_CASE(map_elites) {
   typedef gen::EvoFloat<10, Params> gen_t;
   typedef phen::Parameters<gen_t, fit_t, Params> phen_t;
   typedef eval::Parallel<Params> eval_t;
-  typedef boost::fusion::vector<stat::Map<phen_t, Params>, stat::BestFit<phen_t, Params> > stat_t;
+  typedef boost::fusion::vector<stat::Map<phen_t, Params>, stat::BestFit<phen_t, Params>> stat_t;
   typedef modif::Dummy<> modifier_t;
   typedef ea::MapElites<phen_t, eval_t, stat_t, modifier_t, Params> ea_t;
 

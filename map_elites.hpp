@@ -32,7 +32,6 @@
 //| The fact that you are presently reading this means that you have
 //| had knowledge of the CeCILL license and that you accept its terms.
 
-
 #ifndef MAP_ELITE_HPP_
 #define MAP_ELITE_HPP_
 
@@ -48,7 +47,6 @@
 #include <sferes/stc.hpp>
 #include <sferes/ea/ea.hpp>
 #include <sferes/fit/fitness.hpp>
-
 
 namespace sferes {
   namespace ea {
@@ -71,7 +69,7 @@ namespace sferes {
       MapElites() {
         assert(behav_dim == Params::ea::behav_shape_size());
         for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i)
-          behav_shape[i] = Params::ea::behav_shape(i);
+        behav_shape[i] = Params::ea::behav_shape(i);
         _array.resize(behav_shape);
         _array_parents.resize(behav_shape);
       }
@@ -92,8 +90,8 @@ namespace sferes {
         this->_pop.clear();
 
         for(const phen_t* i = _array.data(); i < (_array.data() + _array.num_elements()); ++i)
-          if(*i)
-            this->_pop.push_back(*i);
+        if(*i)
+        this->_pop.push_back(*i);
 
         pop_t ptmp, p_parents;
         for (size_t i = 0; i < Params::pop::size; ++i) {
@@ -114,7 +112,7 @@ namespace sferes {
 
         assert(ptmp.size() == p_parents.size());
         for (size_t i = 0; i < ptmp.size(); ++i)
-          _add_to_archive(ptmp[i], p_parents[i]);
+        _add_to_archive(ptmp[i], p_parents[i]);
       }
 
 
@@ -151,7 +149,7 @@ namespace sferes {
 
       bool _add_to_archive(indiv_t i1, indiv_t parent) {
         if(i1->fit().dead())
-          return false;
+        return false;
 
         point_t p = _get_point(i1);
 
@@ -162,10 +160,10 @@ namespace sferes {
           assert(behav_pos[i] < behav_shape[i]);
         }
 
-        float epsilon = 0.05;
         if (!_array(behav_pos)
-            || (i1->fit().value() - _array(behav_pos)->fit().value()) > epsilon
-            || (fabs(i1->fit().value() - _array(behav_pos)->fit().value()) <= epsilon && _dist_center(i1) < _dist_center(_array(behav_pos)))) {
+        || (i1->fit().value() - _array(behav_pos)->fit().value()) > Params::ea::epsilon
+        || (fabs(i1->fit().value() - _array(behav_pos)->fit().value()) <= Params::ea::epsilon
+        && _dist_center(i1) < _dist_center(_array(behav_pos))) ) {
           _array(behav_pos) = i1;
           _array_parents(behav_pos) = parent;
           return true;
@@ -180,7 +178,7 @@ namespace sferes {
         float dist = 0.0;
         point_t p = _get_point(indiv);
         for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i)
-          dist += pow(p[i] - (float)round(p[i] * (float)(behav_shape[i] - 1))/(float)(behav_shape[i] - 1), 2);
+        dist += pow(p[i] - (float)round(p[i] * (float)(behav_shape[i] - 1))/(float)(behav_shape[i] - 1), 2);
 
         dist=sqrt(dist);
         return dist;
@@ -190,7 +188,7 @@ namespace sferes {
       point_t _get_point(const I& indiv) const {
         point_t p;
         for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i)
-          p[i] = std::min(1.0f, indiv->fit().desc()[i]);
+        p[i] = std::min(1.0f, indiv->fit().desc()[i]);
 
         return p;
       }
