@@ -21,7 +21,6 @@ namespace sferes {
       behav_index_t behav_strides;
       behav_index_t behav_indexbase;
 
-      //Map() : _xs(0), _ys(0) {}
       Map() : behav_dim(Params::ea::behav_dim) {
         for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i)
           behav_shape[i] = Params::ea::behav_shape(i);
@@ -31,34 +30,22 @@ namespace sferes {
       void refresh(const E& ea) {
         _archive.clear();
 
-        for(size_t i = 0; i < behav_dim; ++i) { //Params::ea::behav_shape_size()
-          assert(ea.archive().shape()[i] == behav_shape[i]);  //ea.behav_shape[i]);
+        for(size_t i = 0; i < behav_dim; ++i) {
+          assert(ea.archive().shape()[i] == behav_shape[i]);
           behav_strides[i] = ea.archive().strides()[i];
           behav_indexbase[i] = ea.archive().index_bases()[i];
         }
 
-        /*_xs = ea.archive().shape()[0];
-        _ys = ea.archive().shape()[1];
-        assert(_xs == Params::ea::res_x);
-        assert(_ys == Params::ea::res_y);*/
-
-        //for(auto phen_t* i = ea.archive().data(); i < (ea.archive().data() + ea.archive().num_elements()); ++i)
         for(const phen_t* i = ea.archive().data(); i < (ea.archive().data() + ea.archive().num_elements()); ++i) {
           phen_t p = *i;
           _archive.push_back(p);
         }
 
-
-        /*for (size_t i = 0; i < _xs; ++i)
-            for (size_t j = 0; j < _ys; ++j)
-            {
-                phen_t p = ea.archive()[i][j];
-                _archive.push_back(p);
-            }*/
+        this->_create_log_file(ea, "progress_archive.dat");
+        _write_progress(ea, *this->_log_file);
 
         if (ea.gen() % Params::pop::dump_period == 0) {
           _write_archive(ea.archive(), std::string("archive_"), ea);
-          _write_progress(ea.archive(),std::string("progress_archive"), ea);
 #ifdef MAP_WRITE_PARENTS
           _write_parents(ea.archive(), ea.parents(), std::string("parents_"), ea);
 #endif
@@ -67,8 +54,6 @@ namespace sferes {
 
 
       void show(std::ostream& os, size_t k) {
-        //std::cerr << "loading "<< k / _ys << "," << k % _ys << std::endl;
-
         std::cerr << "loading " ;
         for(size_t i = 0; i < behav_dim; ++i)
           std::cerr << (k / behav_strides[i] % behav_shape[i] +  behav_indexbase[i]) << ",";
@@ -91,11 +76,6 @@ namespace sferes {
         ar & BOOST_SERIALIZATION_NVP(behav_shape);
         ar & BOOST_SERIALIZATION_NVP(behav_strides);
         ar & BOOST_SERIALIZATION_NVP(behav_indexbase);
-
-        //ar & boost::serialization::make_nvp("behav_indexbase", behav_indexbase);
-
-        /*ar & BOOST_SERIALIZATION_NVP(_xs);
-        ar & BOOST_SERIALIZATION_NVP(_ys);*/
       }
 
 
@@ -117,9 +97,7 @@ namespace sferes {
                              + std::string(".dat");
         std::ofstream ofs(fname.c_str());
 
-        //for(auto i = array.data(); i < (array.data() + array.num_elements()); ++i)
         for(const phen_t* i = array.data(); i < (array.data() + array.num_elements()); ++i) {
-          //boost::array<typename array_t::index, behav_dim> idx = posinarray;
           if (*i) {
             behav_index_t idx = ea.getindexarray(array, i);
             assert(array(idx)->fit().value() == (*i)->fit().value());
@@ -138,22 +116,6 @@ namespace sferes {
             }
           }
         }
-
-        /*for (size_t i = 0; i < _xs; ++i)
-            for (size_t j = 0; j < _ys; ++j)
-                if (array[i][j] && p_array[i][j])
-                {
-                    point_t p = _get_point(p_array[i][j]);
-                    size_t x = round(p[0] * _xs);
-                    size_t y = round(p[1] * _ys);
-                    ofs << i / (float) _xs
-                        << " " << j / (float) _ys
-                        << " " << p_array[i][j]->fit().value()
-                        << " " << x / (float) _xs
-                        << " " << y / (float) _ys
-                        << " " << array[i][j]->fit().value()
-                        << std::endl;
-                }*/
       }
 
       template<typename EA>
@@ -171,52 +133,29 @@ namespace sferes {
 
         size_t offset = 0;
         for(const phen_t* i = array.data(); i < (array.data() + array.num_elements()); ++i) {
-
-          //boost::array<typename array_t::index, behav_dim> idx = posinarray;
-
           if (*i) {
             behav_index_t posinarray = ea.getindexarray(array, i);
             assert(array(posinarray)->fit().value() == (*i)->fit().value());
 
-            //boost::array<typename array_t::index, behav_dim> idx = posinarray; //: error: ‘this’ is not a constant expression
-            //../modules/map_elite/stat_map.hpp:186:66: note: in template argument for type ‘long unsigned int’ ???
-
-
             ofs << offset << "    ";
             for(size_t dim = 0; dim < behav_dim; ++dim)
               ofs << posinarray[dim] / (float) behav_shape[dim] << " ";
-            //ofs << " " << array(idx)->fit().value() << std::endl;
             ofs << " " << array(posinarray)->fit().value() << std::endl;
           }
           ++offset;
         }
 
-        /*for (size_t i = 0; i < _xs; ++i)
-            for (size_t j = 0; j < _ys; ++j)
-                if (array[i][j])
-                {
-                    ofs << i / (float) _xs
-                        << " " << j / (float) _ys
-                        << " " << array[i][j]->fit().value()
-                        << std::endl;
-                }*/
       }
 
 
       template<typename EA>
-      void _write_progress(const array_t& array,
-                           const std::string& prefix,
-                           const EA& ea) const {
-        std::cout << "writing..." << prefix << std::endl;
-        std::string fname = ea.res_dir() + "/"
-                            + prefix
-                            + std::string(".dat");
+      void _write_progress(const EA& ea, std::ofstream& ofs) const {
 
-        std::ofstream ofs(fname.c_str(), std::ofstream::out | std::ofstream::app);
+        const array_t& array = ea.archive();
 
         size_t archive_size = 0;
         float archive_mean = 0.0f;
-        float archive_max = 0.0f;
+        float archive_max = -1e10;
         float mean_dist_center = 0.0f;
 
         for(const phen_t* i = array.data(); i < (array.data() + array.num_elements()); ++i) {
@@ -243,7 +182,6 @@ namespace sferes {
 
         archive_mean /= archive_size;
         mean_dist_center /= archive_size;
-
         ofs << ea.gen() << " " << archive_size << " " << archive_mean << " " << archive_max << " " << mean_dist_center << std::endl;
       }
 

@@ -21,10 +21,10 @@ my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 256)
 
 def scale(x, pos):
     'The two args are the value and tick position'
-    return '%1.1f' % (x / 100.0)
+    return '%1.1f' % (x / 60.0)
 def scale2(x, pos):
     'The two args are the value and tick position'
-    return '%1.1f' % (x / 100.0)
+    return '%1.1f' % (x / 60.0)
 
 size = int(sys.argv[2])
 

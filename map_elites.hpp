@@ -192,11 +192,6 @@ namespace sferes {
         for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i)
           p[i] = std::min(1.0f, indiv->fit().desc()[i]);
 
-        /*p[0] =
-                std::min(1.0f, indiv->fit().desc()[0]);
-        p[1] =
-                std::min(1.0f, indiv->fit().desc()[1]);*/
-
         return p;
       }
 

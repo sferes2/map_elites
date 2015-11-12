@@ -35,6 +35,7 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE map_elites
 
+
 #include <iostream>
 #include <cmath>
 
@@ -81,9 +82,6 @@ using namespace sferes::gen::evo_float;
 
 struct Params {
   struct ea {
-    /*SFERES_CONST size_t res_x = 256;
-    SFERES_CONST size_t res_y = 256;*/
-
     SFERES_CONST size_t behav_dim = 2;
     SFERES_ARRAY(size_t, behav_shape, 256, 256);
 
@@ -120,9 +118,7 @@ public:
     for (size_t i = 0; i < ind.size(); ++i)
       f += ind.data(i) * ind.data(i) - 10 * cos(2 * M_PI * ind.data(i));
     this->_value = -f;
-
-    std::vector<float> data = {ind.gen().data(0), ind.gen().data(1)};
-    //this->set_desc(ind.gen().data(0), ind.gen().data(1));
+    std::vector<float> data = { ind.gen().data(0), ind.gen().data(1) };
     this->set_desc(data);
   }
 
@@ -130,6 +126,7 @@ public:
     return false;
   }
 };
+
 
 BOOST_AUTO_TEST_CASE(map_elites) {
   using namespace sferes;
@@ -144,4 +141,7 @@ BOOST_AUTO_TEST_CASE(map_elites) {
 
   ea_t ea;
   ea.run();
+  float best = ea.stat<1>().best()->fit().value();
+  std::cout<<"best fit (map_elites):" << best << std::endl;
+  BOOST_CHECK(best > -1e-3);
 }
