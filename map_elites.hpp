@@ -57,11 +57,11 @@ namespace sferes {
       typedef typename std::vector<indiv_t> pop_t;
       typedef typename pop_t::iterator it_t;
       typedef typename std::vector<std::vector<indiv_t> > front_t;
-      typedef boost::shared_ptr<Phen> phen_t;
+      typedef boost::shared_ptr<Phen> phen_ptr_t;
       static const size_t behav_dim = Params::ea::behav_dim;
 
       typedef boost::array<float, behav_dim> point_t;
-      typedef boost::multi_array<phen_t, behav_dim> array_t;
+      typedef boost::multi_array<phen_ptr_t, behav_dim> array_t;
       typedef boost::array<typename array_t::index, behav_dim> behav_index_t;
       behav_index_t behav_shape;
 
@@ -89,7 +89,7 @@ namespace sferes {
       void epoch() {
         this->_pop.clear();
 
-        for(const phen_t* i = _array.data(); i < (_array.data() + _array.num_elements()); ++i)
+        for(const phen_ptr_t* i = _array.data(); i < (_array.data() + _array.num_elements()); ++i)
         if(*i)
         this->_pop.push_back(*i);
 
@@ -116,12 +116,12 @@ namespace sferes {
       }
 
 
-      long int getindex(const array_t & m, const phen_t* requestedElement, const unsigned short int direction) const {
+      long int getindex(const array_t & m, const phen_ptr_t* requestedElement, const unsigned short int direction) const {
         int offset = requestedElement - m.origin();
         return (offset / m.strides()[direction] % m.shape()[direction] +  m.index_bases()[direction]);
       }
 
-      behav_index_t getindexarray(const array_t & m, const phen_t* requestedElement ) const {
+      behav_index_t getindexarray(const array_t & m, const phen_ptr_t* requestedElement ) const {
         behav_index_t _index;
         for (unsigned int dir = 0; dir < behav_dim; dir++ ) {
           _index[dir] = getindex( m, requestedElement, dir );
