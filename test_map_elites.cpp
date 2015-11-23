@@ -104,7 +104,10 @@ FIT_MAP(Rastrigin){
     f += ind.data(i) * ind.data(i) - 10 * cos(2 * M_PI * ind.data(i));
     this->_value = -f;
 
-    std::vector<float> data = { ind.gen().data(0), ind.gen().data(1) };
+    std::vector<float> data;
+    data.push_back(ind.gen().data(0));
+    data.push_back(ind.gen().data(1));
+
     this->set_desc(data);
   }
 
@@ -121,7 +124,7 @@ BOOST_AUTO_TEST_CASE(map_elites) {
   typedef gen::EvoFloat<10, Params> gen_t;
   typedef phen::Parameters<gen_t, fit_t, Params> phen_t;
   typedef eval::Parallel<Params> eval_t;
-  typedef boost::fusion::vector<stat::Map<phen_t, Params>, stat::BestFit<phen_t, Params>> stat_t;
+  typedef boost::fusion::vector<stat::Map<phen_t, Params>, stat::BestFit<phen_t, Params> > stat_t;
   typedef modif::Dummy<> modifier_t;
   typedef ea::MapElites<phen_t, eval_t, stat_t, modifier_t, Params> ea_t;
 
