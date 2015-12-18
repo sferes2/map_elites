@@ -5,13 +5,13 @@
 #|
 #| This software is a computer program whose purpose is to facilitate
 #| experiments in evolutionary computation and evolutionary robotics.
-#| 
+#|
 #| This software is governed by the CeCILL license under French law
 #| and abiding by the rules of distribution of free software.  You
 #| can use, modify and/ or redistribute the software under the terms
 #| of the CeCILL license as circulated by CEA, CNRS and INRIA at the
 #| following URL "http://www.cecill.info".
-#| 
+#|
 #| As a counterpart to the access to the source code and rights to
 #| copy, modify and redistribute granted by the license, users are
 #| provided only with a limited warranty and the software's author,
@@ -34,17 +34,18 @@
 #| had knowledge of the CeCILL license and that you accept its terms.
 
 import os
+from waflib.Configure import conf
 
-def set_options(blah) : pass
+def options(blah) : pass
 
+@conf
 def configure(blah): pass
 
 def build(bld):
     print ("Entering directory `" + os.getcwd() + "/modules/'")
-    test_map_elites = bld.new_task_gen('cxx', 'program')
-    test_map_elites.source = 'test_map_elites.cpp'
-    test_map_elites.includes = '. ../../'
-    test_map_elites.uselib_local = 'sferes2'
-    test_map_elites.uselib = 'EIGEN3 BOOST BOOST_UNIT_TEST_FRAMEWORK'
-    test_map_elites.target = 'test_map_elites'
-    test_map_elites.unit_test = 1
+    bld.program(features = 'cxx test',
+                   source = 'test_map_elites.cpp',
+                   includes = '. ../../',
+                   uselib = 'EIGEN BOOST BOOST_UNIT_TEST_FRAMEWORK',
+                   use = 'sferes2',
+                   target = 'test_map_elites')
