@@ -46,6 +46,6 @@ def build(bld):
     bld.program(features = 'cxx test',
                    source = 'test_map_elites.cpp',
                    includes = '. ../../',
-                   uselib = 'EIGEN BOOST BOOST_UNIT_TEST_FRAMEWORK',
+                   uselib = 'EIGEN BOOST BOOST_UNIT_TEST_FRAMEWORK TBB ',
                    use = 'sferes2',
                    target = 'test_map_elites')
