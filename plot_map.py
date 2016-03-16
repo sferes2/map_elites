@@ -37,7 +37,7 @@ m = 0
 x_m = 0
 y_m = 0
 for i in range(0, len(z)):
-    data[round(x[i] * size), round(y[i] * size)] = z[i]
+    data[int(round(x[i] * size)), int(round(y[i] * size))] = z[i]
     if z[i] > m:
         x_m = round(x[i] * size)
         y_m = round(y[i] * size)
