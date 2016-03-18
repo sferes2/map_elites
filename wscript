@@ -49,3 +49,9 @@ def build(bld):
                    uselib = 'EIGEN BOOST BOOST_UNIT_TEST_FRAMEWORK TBB ',
                    use = 'sferes2',
                    target = 'test_map_elites')
+    bld.program(features = 'cxx',
+                   source = 'extract_binary_map.cpp',
+                   includes = '. ../../',
+                   uselib = 'EIGEN BOOST',
+                   use = 'sferes2',
+                   target = 'extract_binary_map')
