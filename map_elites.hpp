@@ -155,7 +155,7 @@ namespace sferes {
 
         behav_index_t behav_pos;
         for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i) {
-          behav_pos[i] = round(p[i] * behav_shape[i]);
+          behav_pos[i] = floor(p[i] * behav_shape[i]);
           behav_pos[i] = std::min(behav_pos[i], behav_shape[i] - 1);
           assert(behav_pos[i] < behav_shape[i]);
         }
