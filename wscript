@@ -34,12 +34,6 @@
 #| had knowledge of the CeCILL license and that you accept its terms.
 
 import os
-from waflib.Configure import conf
-
-def options(blah) : pass
-
-@conf
-def configure(blah): pass
 
 def build(bld):
     print ("Entering directory `" + os.getcwd() + "/modules/'")
