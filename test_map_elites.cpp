@@ -58,6 +58,9 @@
 #include "fit_map.hpp"
 #include "stat_map.hpp"
 
+// only for sampled / evofloat
+#include "stat_map_binary.hpp"
+
 #ifndef NO_PARALLEL
 #include <sferes/eval/parallel.hpp>
 #else
@@ -124,7 +127,9 @@ BOOST_AUTO_TEST_CASE(map_elites) {
   typedef gen::EvoFloat<10, Params> gen_t;
   typedef phen::Parameters<gen_t, fit_t, Params> phen_t;
   typedef eval::Parallel<Params> eval_t;
-  typedef boost::fusion::vector<stat::Map<phen_t, Params>, stat::BestFit<phen_t, Params> > stat_t;
+  typedef boost::fusion::vector<stat::Map<phen_t, Params>,
+				stat::BestFit<phen_t, Params>,
+				stat::MapBinary<phen_t, Params> > stat_t;
   typedef modif::Dummy<> modifier_t;
   typedef ea::MapElites<phen_t, eval_t, stat_t, modifier_t, Params> ea_t;
 
