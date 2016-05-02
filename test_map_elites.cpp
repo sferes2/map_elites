@@ -73,15 +73,15 @@ struct Params {
   struct ea {
     SFERES_CONST size_t behav_dim = 2;
     SFERES_CONST double epsilon = 0;//0.05;
-    SFERES_ARRAY(size_t, behav_shape, 256, 256);
+    SFERES_ARRAY(size_t, behav_shape, 128, 128);
   };
   struct pop {
     // number of initial random points
     SFERES_CONST size_t init_size = 1000;
     // size of a batch
     SFERES_CONST size_t size = 1000;
-    SFERES_CONST size_t nb_gen = 10001;
-    SFERES_CONST size_t dump_period = 1000;
+    SFERES_CONST size_t nb_gen = 1001;
+    SFERES_CONST size_t dump_period = 100;
   };
   struct parameters {
     SFERES_CONST float min = -5;
