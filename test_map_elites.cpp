@@ -32,8 +32,8 @@
 //| The fact that you are presently reading this means that you have
 //| had knowledge of the CeCILL license and that you accept its terms.
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE map_elites
+// #define BOOST_TEST_DYN_LINK
+// #define BOOST_TEST_MODULE map_elites
 
 
 #include <iostream>
@@ -111,6 +111,11 @@ FIT_MAP(Rastrigin){
     data.push_back(ind.gen().data(0));
     data.push_back(ind.gen().data(1));
 
+    #ifdef NORMALIZED
+    data[0] = 20.0f*data[0] - 10.0f;
+    data[1] = 100.0f*data[1] - 5.0f;
+    #endif
+
     this->set_desc(data);
   }
 
@@ -119,8 +124,7 @@ FIT_MAP(Rastrigin){
   }
 };
 
-
-BOOST_AUTO_TEST_CASE(map_elites) {
+int main() {
   using namespace sferes;
 
   typedef Rastrigin<Params> fit_t;
@@ -137,5 +141,24 @@ BOOST_AUTO_TEST_CASE(map_elites) {
   ea.run();
   float best = ea.stat<1>().best()->fit().value();
   std::cout<<"best fit (map_elites):" << best << std::endl;
-  BOOST_CHECK(best > -1e-3);
+  return 0;
 }
+// BOOST_AUTO_TEST_CASE(map_elites) {
+//   using namespace sferes;
+//
+//   typedef Rastrigin<Params> fit_t;
+//   typedef gen::EvoFloat<10, Params> gen_t;
+//   typedef phen::Parameters<gen_t, fit_t, Params> phen_t;
+//   typedef eval::Parallel<Params> eval_t;
+//   typedef boost::fusion::vector<stat::Map<phen_t, Params>,
+// 				stat::BestFit<phen_t, Params>,
+// 				stat::MapBinary<phen_t, Params> > stat_t;
+//   typedef modif::Dummy<> modifier_t;
+//   typedef ea::MapElites<phen_t, eval_t, stat_t, modifier_t, Params> ea_t;
+//
+//   ea_t ea;
+//   ea.run();
+//   float best = ea.stat<1>().best()->fit().value();
+//   std::cout<<"best fit (map_elites):" << best << std::endl;
+//   BOOST_CHECK(best > -1e-3);
+// }

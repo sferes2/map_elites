@@ -41,11 +41,10 @@ namespace sferes {
         SFERES_FITNESS(FitMap, sferes::fit::Fitness)
         {
         public:
-            FitMap() : _desc(Params::ea::behav_dim) {}
-            const std::vector<float>& desc() const
-            {
-                return _desc;
-            }
+            FitMap() : _desc(Params::ea::behav_dim, -9.9f), _desc_normalized(Params::ea::behav_dim, -99.99f) {}
+
+            const std::vector<float>& desc() const { return _desc; }
+            const std::vector<float>& desc_normalized() const { return _desc_normalized; }
 
             /*void set_desc(float x1, float x2)
       {
@@ -62,13 +61,23 @@ namespace sferes {
             { ////void set_desc(boost::array<float,Params::ea::behav_dim> x)
                 assert(x.size() == Params::ea::behav_dim);
                 for (size_t i = 0; i < x.size(); ++i)
-                    assert(x[i] >= 0.0 && x[i] <= 1.0);
+                    // assert(x[i] >= 0.0 && x[i] <= 1.0);
 
                 _desc = x;
             }
 
+            void normalize_desc(const std::pair<std::vector<float>,std::vector<float>>& min_max)
+            {
+              assert(min_max.first.size() == min_max.second.size());
+              assert(_desc.size() == _desc_normalized.size() && min_max.first.size() == _desc.size());
+
+              for (size_t i=0; i<_desc.size(); ++i)
+              _desc_normalized[i] = (_desc[i] - min_max.first[i]) / (min_max.second[i] - min_max.first[i]);
+            }
+
         protected:
             std::vector<float> _desc;
+            std::vector<float> _desc_normalized;
         };
     }
 }

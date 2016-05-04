@@ -110,11 +110,14 @@ namespace sferes {
         }
         this->_eval_pop(ptmp, 0, ptmp.size());
 
+        #ifdef NORMALIZED
+        _normalize_descriptors(this->_pop, ptmp);
+        #endif
+
         assert(ptmp.size() == p_parents.size());
         for (size_t i = 0; i < ptmp.size(); ++i)
         _add_to_archive(ptmp[i], p_parents[i]);
       }
-
 
       long int getindex(const array_t & m, const phen_ptr_t* requestedElement, const unsigned short int direction) const {
         int offset = requestedElement - m.origin();
@@ -146,6 +149,38 @@ namespace sferes {
       array_t _array;
       array_t _prev_array;
       array_t _array_parents;
+
+      #ifdef NORMALIZED
+      const std::pair<std::vector<float>,std::vector<float>> _get_min_max(const pop_t& p) const {
+        std::vector<float> minF(behav_dim, std::numeric_limits<float>::max());
+        std::vector<float> maxF(behav_dim, std::numeric_limits<float>::min());
+
+        for (const indiv_t& indiv : p) {
+          for (size_t i=0; i<behav_dim; ++i)
+          {
+            if (minF[i] > indiv->fit().desc()[i])
+            minF[i] = indiv->fit().desc()[i];
+
+            if (maxF[i] < indiv->fit().desc()[i])
+            maxF[i] = indiv->fit().desc()[i];
+          }
+        }
+
+        return std::pair<std::vector<float>,std::vector<float>>(minF,maxF);
+      }
+
+      void _normalize_descriptors(pop_t& parents, pop_t& offspring) {
+        // Get the mean and standard deviation for each descriptor variable from both parents and offspring
+        pop_t p = parents;
+        p.insert(p.end(), offspring.begin(), offspring.end());
+        std::pair<std::vector<float>,std::vector<float>> min_max = _get_min_max(p);
+
+        // Normalize descriptor
+        for (const indiv_t& indiv : p) {
+          indiv->fit().normalize_desc(min_max);
+        }
+      }
+      #endif
 
       bool _add_to_archive(indiv_t i1, indiv_t parent) {
         if(i1->fit().dead())
@@ -188,7 +223,11 @@ namespace sferes {
       point_t _get_point(const I& indiv) const {
         point_t p;
         for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i)
+        #ifdef NORMALIZED
+        p[i] = std::min(1.0f, std::max(0.0f, indiv->fit().desc_normalized()[i]));
+        #else
         p[i] = std::min(1.0f, indiv->fit().desc()[i]);
+        #endif
 
         return p;
       }

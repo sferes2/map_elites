@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 #| This file is a part of the sferes2 framework.
 #| Copyright 2009, ISIR / Universite Pierre et Marie Curie (UPMC)
 #| Main contributor(s): Jean-Baptiste Mouret, mouret@isir.fr
@@ -34,15 +34,24 @@
 #| had knowledge of the CeCILL license and that you accept its terms.
 
 import os
+import sferes
 
 def build(bld):
     print ("Entering directory `" + os.getcwd() + "/modules/'")
-    bld.program(features = 'cxx test',
-                   source = 'test_map_elites.cpp',
-                   includes = '. ../../',
-                   uselib = 'EIGEN BOOST BOOST_UNIT_TEST_FRAMEWORK TBB ',
-                   use = 'sferes2',
-                   target = 'test_map_elites')
+    # bld.program(features = 'cxx test',
+    #                source = 'test_map_elites.cpp',
+    #                includes = '. ../../',
+    #                uselib = 'EIGEN BOOST BOOST_UNIT_TEST_FRAMEWORK TBB ',
+    #                use = 'sferes2',
+    #                target = 'test_map_elites')
+
+    sferes.create_variants(bld,
+                           source = 'test_map_elites.cpp',
+                           use = 'sferes2',
+                           uselib = 'EIGEN BOOST BOOST_UNIT_TEST_FRAMEWORK TBB ',
+                           target = 'test_map_elites',
+                           variants = ['NORMALIZED'])
+
     bld.program(features = 'cxx',
                    source = 'extract_binary_map.cpp',
                    includes = '. ../../',

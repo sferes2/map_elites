@@ -168,10 +168,17 @@ namespace sferes {
 
             float dist = 0.0f;
             for(size_t i = 0; i < Params::ea::behav_shape_size(); ++i) {
+              #ifdef NORMALIZED
+              assert(p->fit().desc_normalized()[i] >= 0.0f && p->fit().desc_normalized()[i] <= 1.0f);
+
+              float diff = p->fit().desc_normalized()[i] -
+                           (float)round(p->fit().desc_normalized()[i] * (float)(Params::ea::behav_shape(i)-1)) / (float)(Params::ea::behav_shape(i) - 1);
+              #else
               assert(p->fit().desc()[i] >= 0.0f && p->fit().desc()[i] <= 1.0f);
 
               float diff = p->fit().desc()[i] -
                            (float)round(p->fit().desc()[i] * (float)(Params::ea::behav_shape(i)-1)) / (float)(Params::ea::behav_shape(i) - 1);
+              #endif
 
               dist += diff * diff;
             }
