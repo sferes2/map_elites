@@ -37,47 +37,51 @@
 #define FIT_MAP(Name) SFERES_FITNESS(Name, sferes::fit::FitMap)
 
 namespace sferes {
-    namespace fit {
-        SFERES_FITNESS(FitMap, sferes::fit::Fitness)
-        {
-        public:
-            FitMap() : _desc(Params::ea::behav_dim, -9.9f), _desc_normalized(Params::ea::behav_dim, -99.99f) {}
+namespace fit {
+SFERES_FITNESS(FitMap, sferes::fit::Fitness) {
+public:
+  FitMap()
+      : _desc(Params::ea::behav_dim, -9.9f),
+        _desc_normalized(Params::ea::behav_dim, -99.99f) {}
 
-            const std::vector<float>& desc() const { return _desc; }
-            const std::vector<float>& desc_normalized() const { return _desc_normalized; }
+  const std::vector<float> &desc() const { return _desc; }
+  const std::vector<float> &desc_normalized() const { return _desc_normalized; }
 
-            /*void set_desc(float x1, float x2)
-      {
-        assert(x1 >= 0);
-        assert(x2 >= 0);
-        assert(x1 <= 1);
-        assert(x2 <= 1);
-        assert(_desc.size() >= 2);
-        _desc[0] = x1;
-        _desc[1] = x2;
-      }*/
+  /*void set_desc(float x1, float x2)
+{
+assert(x1 >= 0);
+assert(x2 >= 0);
+assert(x1 <= 1);
+assert(x2 <= 1);
+assert(_desc.size() >= 2);
+_desc[0] = x1;
+_desc[1] = x2;
+}*/
 
-            void set_desc(std::vector<float> & x)
-            { ////void set_desc(boost::array<float,Params::ea::behav_dim> x)
-                assert(x.size() == Params::ea::behav_dim);
-                for (size_t i = 0; i < x.size(); ++i)
-                    // assert(x[i] >= 0.0 && x[i] <= 1.0);
+  void set_desc(
+      std::vector<float> &
+      x) { ////void set_desc(boost::array<float,Params::ea::behav_dim> x)
+    assert(x.size() == Params::ea::behav_dim);
+    for (size_t i = 0; i < x.size(); ++i)
+      // assert(x[i] >= 0.0 && x[i] <= 1.0);
 
-                _desc = x;
-            }
+      _desc = x;
+  }
 
-            void normalize_desc(const std::pair<std::vector<float>,std::vector<float>>& min_max)
-            {
-              assert(min_max.first.size() == min_max.second.size());
-              assert(_desc.size() == _desc_normalized.size() && min_max.first.size() == _desc.size());
+  void normalize_desc(
+      const std::pair<std::vector<float>, std::vector<float>> &min_max) {
+    assert(min_max.first.size() == min_max.second.size());
+    assert(_desc.size() == _desc_normalized.size() &&
+           min_max.first.size() == _desc.size());
 
-              for (size_t i=0; i<_desc.size(); ++i)
-              _desc_normalized[i] = (_desc[i] - min_max.first[i]) / (min_max.second[i] - min_max.first[i]);
-            }
+    for (size_t i = 0; i < _desc.size(); ++i)
+      _desc_normalized[i] = (_desc[i] - min_max.first[i]) /
+                            (min_max.second[i] - min_max.first[i]);
+  }
 
-        protected:
-            std::vector<float> _desc;
-            std::vector<float> _desc_normalized;
-        };
-    }
+protected:
+  std::vector<float> _desc;
+  std::vector<float> _desc_normalized;
+};
+}
 }

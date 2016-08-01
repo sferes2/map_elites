@@ -35,27 +35,26 @@
 // #define BOOST_TEST_DYN_LINK
 // #define BOOST_TEST_MODULE map_elites
 
-
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
-#include <boost/foreach.hpp>
-#include <boost/multi_array.hpp>
 #include <boost/array.hpp>
+#include <boost/foreach.hpp>
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 #include <boost/fusion/include/for_each.hpp>
+#include <boost/multi_array.hpp>
 
 #include <boost/test/unit_test.hpp>
 
 #include <sferes/eval/parallel.hpp>
 #include <sferes/gen/evo_float.hpp>
-#include <sferes/phen/parameters.hpp>
 #include <sferes/modif/dummy.hpp>
+#include <sferes/phen/parameters.hpp>
 #include <sferes/run.hpp>
 #include <sferes/stat/best_fit.hpp>
 
-#include "map_elites.hpp"
 #include "fit_map.hpp"
+#include "map_elites.hpp"
 #include "stat_map.hpp"
 
 // only for sampled / evofloat
@@ -72,7 +71,7 @@ using namespace sferes::gen::evo_float;
 struct Params {
   struct ea {
     SFERES_CONST size_t behav_dim = 2;
-    SFERES_CONST double epsilon = 0;//0.05;
+    SFERES_CONST double epsilon = 0; // 0.05;
     SFERES_ARRAY(size_t, behav_shape, 128, 128);
   };
   struct pop {
@@ -98,31 +97,27 @@ struct Params {
 };
 
 // Rastrigin
-FIT_MAP(Rastrigin){
-  public :
-  template <typename Indiv>
-  void eval(Indiv & ind) {
-    float f = 10 * ind.size();
-    for (size_t i = 0; i < ind.size(); ++i)
-    f += ind.data(i) * ind.data(i) - 10 * cos(2 * M_PI * ind.data(i));
-    this->_value = -f;
+FIT_MAP(Rastrigin){public : template <typename Indiv>
+                   void eval(Indiv & ind){float f = 10 * ind.size();
+for (size_t i = 0; i < ind.size(); ++i)
+  f += ind.data(i) * ind.data(i) - 10 * cos(2 * M_PI * ind.data(i));
+this->_value = -f;
 
-    std::vector<float> data;
-    data.push_back(ind.gen().data(0));
-    data.push_back(ind.gen().data(1));
+std::vector<float> data;
+data.push_back(ind.gen().data(0));
+data.push_back(ind.gen().data(1));
 
-    #ifdef NORMALIZED
-    data[0] = 20.0f*data[0] - 10.0f;
-    data[1] = 100.0f*data[1] - 5.0f;
-    #endif
+#ifdef NORMALIZED
+data[0] = 20.0f * data[0] - 10.0f;
+data[1] = 100.0f * data[1] - 5.0f;
+#endif
 
-    this->set_desc(data);
-  }
+this->set_desc(data);
+}
 
-  bool dead() {
-    return false;
-  }
-};
+bool dead() { return false; }
+}
+;
 
 int main() {
   using namespace sferes;
@@ -132,15 +127,16 @@ int main() {
   typedef phen::Parameters<gen_t, fit_t, Params> phen_t;
   typedef eval::Parallel<Params> eval_t;
   typedef boost::fusion::vector<stat::Map<phen_t, Params>,
-				stat::BestFit<phen_t, Params>,
-				stat::MapBinary<phen_t, Params> > stat_t;
+                                stat::BestFit<phen_t, Params>,
+                                stat::MapBinary<phen_t, Params>>
+      stat_t;
   typedef modif::Dummy<> modifier_t;
   typedef ea::MapElites<phen_t, eval_t, stat_t, modifier_t, Params> ea_t;
 
   ea_t ea;
   ea.run();
   float best = ea.stat<1>().best()->fit().value();
-  std::cout<<"best fit (map_elites):" << best << std::endl;
+  std::cout << "best fit (map_elites):" << best << std::endl;
   return 0;
 }
 // BOOST_AUTO_TEST_CASE(map_elites) {
