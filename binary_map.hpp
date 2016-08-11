@@ -21,12 +21,14 @@ namespace binary_map {
         std::vector<int> pos;
         std::vector<float> phen;
         float fit;
+        float extra;
         template <class Archive>
         void serialize(Archive& ar, const unsigned int version)
         {
             ar& BOOST_SERIALIZATION_NVP(pos);
             ar& BOOST_SERIALIZATION_NVP(phen);
             ar& BOOST_SERIALIZATION_NVP(fit);
+            ar& BOOST_SERIALIZATION_NVP(extra);
         }
     };
 
