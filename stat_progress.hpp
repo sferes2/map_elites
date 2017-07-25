@@ -12,8 +12,8 @@ namespace sferes {
         public:
             typedef boost::shared_ptr<Phen> phen_t;
             typedef boost::multi_array<phen_t, Params::ea::behav_dim> array_t;
-            typedef boost::array<float, Params::ea::behav_dim> point_t;
-            typedef boost::array<typename array_t::index, Params::ea::behav_dim> behav_index_t;
+            typedef std::array<float, Params::ea::behav_dim> point_t;
+            typedef std::array<typename array_t::index, Params::ea::behav_dim> behav_index_t;
 
             size_t behav_dim;
             behav_index_t behav_shape;

@@ -4,6 +4,7 @@
 #include <numeric>
 #include <boost/multi_array.hpp>
 #include <sferes/stat/stat.hpp>
+#include <boost/serialization/array.hpp>
 
 #include "binary_map.hpp"
 
