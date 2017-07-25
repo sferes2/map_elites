@@ -2,7 +2,7 @@
 #define STAT_MAP_PROGRESS_HPP_
 
 #include <numeric>
-#include <boost/multi_array.hpp>
+#include <array>
 #include <sferes/stat/stat.hpp>
 
 namespace sferes {

@@ -37,10 +37,10 @@
 
 #include <algorithm>
 #include <limits>
+#include <array>
 
 #include <boost/foreach.hpp>
 #include <boost/multi_array.hpp>
-#include <boost/array.hpp>
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 #include <boost/fusion/include/for_each.hpp>
 
