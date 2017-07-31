@@ -10,6 +10,27 @@
 
 namespace sferes {
     namespace stat {
+        namespace _stat_map {
+            // this is a nice (complicated) trick to detect if the type T has a member named 'size'
+            // we need this because we might be unable to print the data (e.g. for a neural network)
+            template<typename T, typename = int>
+            struct HasSize : std::false_type {};
+            template<typename T>
+            struct HasSize<T, decltype(&T::size, 0)> : std::true_type {};
+
+            class DataPrinter {
+            public:
+                template<class T>
+                typename std::enable_if<HasSize<T>::value, void>::type print(const T& gen, std::ofstream& ofs) const { 
+                  for (size_t k = 0; k < gen.size(); ++k)
+                        ofs << gen.data(k) << " ";
+                }
+                template<class T>
+                typename std::enable_if<!HasSize<T>::value, void>::type print(const T& gen, std::ofstream& ofs) const {
+                    // do nothing
+                }
+            };
+        }
         SFERES_STAT(Map, Stat)
         {
         public:
@@ -140,8 +161,9 @@ namespace sferes {
                         for (size_t dim = 0; dim < behav_dim; ++dim)
                             ofs << posinarray[dim] / (float)behav_shape[dim] << " ";
                         ofs << " " << array(posinarray)->fit().value() << " ";
-                        for (size_t k = 0; k < array(posinarray)->gen().size(); ++k)
-                            ofs << array(posinarray)->gen().data(k) << " ";
+                        // this will print only if there is a size() member in the genotype
+                        // (which means that we have some kind of vector)
+                        _stat_map::DataPrinter().print(array(posinarray)->gen(), ofs);
                         ofs << std::endl;
                     }
                     ++offset;

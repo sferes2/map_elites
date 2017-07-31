@@ -49,8 +49,9 @@ protected:
                 auto phen = array(posinarray);
                 float fit = phen->fit().value();
                 std::vector<float> p;
+                /* TODO
                 for (size_t j = 0; j < phen->size(); ++j)
-                    p.push_back(phen->data(j));
+                    p.push_back(phen->data(j));*/
                 map.elems.push_back(binary_map::Elem{pos, p, fit});
             }
             ++offset;

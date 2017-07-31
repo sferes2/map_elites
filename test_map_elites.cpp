@@ -140,3 +140,90 @@ BOOST_AUTO_TEST_CASE(map_elites) {
   std::cout<<"best fit (map_elites):" << best << std::endl;
   BOOST_CHECK(best > -1e-3);
 }
+
+#if 0 // requires nn2 to run
+
+#include <modules/nn2/gen_dnn.hpp>
+#include <modules/nn2/phen_dnn.hpp>
+
+
+struct ParamsDnn {
+  struct evo_float {
+    SFERES_CONST float mutation_rate = 0.1f;
+    SFERES_CONST float cross_rate = 0.1f;
+    SFERES_CONST mutation_t mutation_type = polynomial;
+    SFERES_CONST cross_over_t cross_over_type = sbx;
+    SFERES_CONST float eta_m = 15.0f;
+    SFERES_CONST float eta_c = 15.0f;
+  };
+  struct parameters {
+    // maximum value of parameters
+    SFERES_CONST float min = -5.0f;
+    // minimum value
+    SFERES_CONST float max = 5.0f;
+  };
+  struct dnn {
+    SFERES_CONST size_t nb_inputs	= 4;
+    SFERES_CONST size_t nb_outputs	= 1;
+    SFERES_CONST size_t min_nb_neurons	= 4;
+    SFERES_CONST size_t max_nb_neurons	= 5;
+    SFERES_CONST size_t min_nb_conns	= 100;
+    SFERES_CONST size_t max_nb_conns	= 101;
+    SFERES_CONST float  max_weight	= 2.0f;
+    SFERES_CONST float  max_bias	= 2.0f;
+
+    SFERES_CONST float m_rate_add_conn	= 1.0f;
+    SFERES_CONST float m_rate_del_conn	= 1.0f;
+    SFERES_CONST float m_rate_change_conn = 1.0f;
+    SFERES_CONST float m_rate_add_neuron  = 1.0f;
+    SFERES_CONST float m_rate_del_neuron  = 1.0f;
+
+    SFERES_CONST int io_param_evolving = true;
+    SFERES_CONST sferes::gen::dnn::init_t init = sferes::gen::dnn::random_topology;
+  };
+};
+
+
+// Rastrigin
+FIT_MAP(TestDnn){
+  public :
+  template <typename Indiv>
+  void eval(Indiv & ind) {
+   
+    std::vector<float> data;
+    data.push_back(0);
+    data.push_back(1);
+
+    this->set_desc(data);
+  }
+
+  bool dead() {
+    return false;
+  }
+};
+
+BOOST_AUTO_TEST_CASE(map_elites_dnn) {
+  using namespace sferes;
+  using namespace nn;
+  typedef phen::Parameters<gen::EvoFloat<1, ParamsDnn>, fit::FitDummy<>, ParamsDnn> weight_t;
+  typedef phen::Parameters<gen::EvoFloat<1, ParamsDnn>, fit::FitDummy<>, ParamsDnn> bias_t;
+  typedef PfWSum<weight_t> pf_t;
+  typedef AfTanh<bias_t> af_t;
+  typedef sferes::gen::Dnn<Neuron<pf_t, af_t>,  Connection<weight_t>, ParamsDnn> gen_t;
+  typedef phen::Dnn<gen_t, TestDnn<Params>, ParamsDnn> phen_t;
+
+  typedef eval::Parallel<Params> eval_t;
+  typedef boost::fusion::vector<
+        stat::Map<phen_t, Params>
+				, stat::BestFit<phen_t, Params>
+        > stat_t;
+  typedef modif::Dummy<> modifier_t;
+  typedef ea::MapElites<phen_t, eval_t, stat_t, modifier_t, Params> ea_t;
+
+  ea_t ea;
+  ea.run();
+  float best = ea.stat<1>().best()->fit().value();
+  std::cout<<"best fit (map_elites):" << best << std::endl;
+  BOOST_CHECK(best > -1e-3);
+}
+#endif
